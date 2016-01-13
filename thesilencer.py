@@ -82,8 +82,8 @@ class httpPost(Thread):
                         "Host: %s\r\n"
                         "User-Agent: %s\r\n"
                         "Connection: keep-alive\r\n"
-                        "Keep-Alive: 874\r\n"
-                        "Content-Length: 98768\r\n"
+                        "Keep-Alive: 894\r\n"
+                        "Content-Length: 99768\r\n"
                         "Content-Type: application/x-www-form-urlencoded\r\n\r\n" % 
                         (self.host, random.choice(useragents)))
 
