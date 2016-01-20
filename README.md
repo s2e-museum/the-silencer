@@ -1,5 +1,5 @@
 # the-silencer
-A slow POST/GET DoS/stress testing tool based upon torshammer
+A slow POST/GET DoS/stress testing tool based upon torshammer, could kill IIS and Apache. However, NGINX is able to handle this attack pretty well.
 
 Improved by changing content length and keep alive to a little smaller but seemingly random value, which will prevent the detection based on the requests that Torshammer sent. Also added cookies and a mixed GET/POST to prevent detection.
 
