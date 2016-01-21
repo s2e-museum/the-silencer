@@ -100,7 +100,7 @@ class httpPost(Thread):
         self.tor = tor
         self.running = True
 		
-    def _send_http_post(self, pause=random.randint(5,10)): 
+    def _send_http_post(self, pause=random.randint(8,11)): 
         global stop_now
 
         self.socks.send("POST / HTTP/1.1\r\n"
