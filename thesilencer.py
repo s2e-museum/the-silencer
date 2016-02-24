@@ -159,7 +159,7 @@ class httpPost(Thread):
                 except Exception, e:
                     if e.args[0] == 106 or e.args[0] == 60:
                         break
-                    print term.BOL+term.UP+term.CLEAR_EOL+"Either target is down or your IP is blocked."+ term.NORMAL
+                    print term.BOL+term.UP+term.CLEAR_EOL+"DoS - Host is DOWN!"+ term.NORMAL
                     time.sleep(1)
                     set_flag(1)
                     set_safe()
@@ -235,7 +235,7 @@ if __name__ == "__main__":
     print " * Slow HTTP DoS Testing Tool"
     print " * Based on Torshammer, modded by haigiang02 from zunzutech.com"
     print " * Anon-ymized via Tor"
-    print " * Only those with wit survives"
+    print " * Only those with enough power and wit survives"
     print " */\n"
 
     main(sys.argv[1:])
